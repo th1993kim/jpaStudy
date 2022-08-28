@@ -1,6 +1,7 @@
 package main;
 
 import domain.Member;
+import valuetype.Address;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,20 +17,22 @@ public class JpaMain {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
 
-
-        Member member;
-
         try {
             tx.begin();
-            member = em.getReference(Member.class, 1L);
-            System.out.println("============= em.find 호출 후  ==================");
+            Member member = new Member();
+            member.getHobbies().add("헬스");
+            member.getHobbies().add("코딩");
+
+            member.getAddressHistory().add(new Address("서울","연희동","202번지"));
+            member.getAddressHistory().add(new Address("인천","마전동","105번지"));
+
+            em.persist(member);
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
         } finally {
             em.close();
         }
-        System.out.println("member name = " + member.getName());
         emf.close();
     }
 
